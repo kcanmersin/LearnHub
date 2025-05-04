@@ -1,0 +1,19 @@
+.error {
+  color: red;
+  margin-top: 10px;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+form div {
+  margin-bottom: 10px;
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+input {
+  padding: 8px;
+  width: 250px;
+}

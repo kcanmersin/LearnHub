@@ -1,0 +1,12 @@
+<nav>
+  <ul>
+    <li><a routerLink="/learn">Learn</a></li>
+    <li *ngIf="!(isLoggedIn$ | async)"><a routerLink="/login">Login</a></li>
+    <li *ngIf="!(isLoggedIn$ | async)"><a routerLink="/register">Register</a></li>
+    <li *ngIf="(isLoggedIn$ | async)"><a (click)="logout()" style="cursor: pointer;">Logout</a></li>
+  </ul>
+</nav>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
