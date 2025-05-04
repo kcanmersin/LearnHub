@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnHub Login</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 15px;
+            width: 250px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 95%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: red;
+            min-height: 1.2em;
+        }
+         #logout-section, #logged-in-status {
+             margin-top: 15px;
+             padding-top: 10px;
+             border-top: 1px solid #eee;
+         }
+         #logout-button {
+             background-color: #dc3545;
+         }
+          #logout-button:hover {
+             background-color: #c82333;
+         }
+    </style>
+</head>
+<body>
+    <h3>LearnHub Login</h3>
+
+    <div id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required value="kcanmersin">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required value="19071907">
+
+        <button id="login-button">Login</button>
+        <div id="status"></div>
+    </div>
+
+     <div id="logout-section" style="display: none;">
+        <div id="logged-in-status">Logged in as: <strong id="logged-in-user"></strong></div>
+        <button id="logout-button">Logout</button>
+    </div>
+
+
+    <script src="login.js"></script>
+</body>
+</html>

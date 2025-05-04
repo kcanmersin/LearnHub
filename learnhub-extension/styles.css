@@ -1,0 +1,110 @@
+#learnhub-popup {
+    position: absolute;
+    z-index: 99999;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    max-width: 400px;
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #333;
+    border-radius: 4px;
+}
+
+#learnhub-popup strong {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+#learnhub-popup p {
+    margin-top: 0;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+#learnhub-popup ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+#learnhub-popup li {
+    margin-bottom: 5px;
+}
+
+
+#learnhub-selected-text {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#learnhub-content {
+    margin-bottom: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#learnhub-button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+#learnhub-popup button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+#learnhub-popup button:hover {
+    background-color: #eee;
+}
+
+#learnhub-popup button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#learnhub-save-button {
+    background-color: #e7f0ff;
+    border-color: #abc;
+}
+#learnhub-save-button:hover:not(:disabled) {
+    background-color: #d0e0ff;
+}
+
+#learnhub-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 123, 255, 0.9);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 100000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+#learnhub-notification.show {
+    opacity: 1;
+    visibility: visible;
+}

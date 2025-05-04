@@ -1,28 +1,27 @@
-# main.py
 from fastapi import FastAPI, Depends, HTTPException, status, Form
 from fastapi.middleware.cors import CORSMiddleware
-# OAuth2PasswordRequestForm import'u artık burada gerekli değil
-# from fastapi.security import OAuth2PasswordRequestForm
 import os
 import sys
 import signal
 import uvicorn
 from dotenv import load_dotenv
-from typing import List, Tuple, Optional
+from typing import List, Optional # List import edildi
 
 from database import get_db_connection
 from mysql.connector import Error as MySQLError
 import crud
 import auth
 import services
-from schemas import User, Token, UserCreate, LanguageRequest, LLMResponse
+from schemas import (
+    User, Token, UserCreate, LanguageRequest, LLMResponse, SaveWordRequest, UserQuery
+)
 
 load_dotenv()
 
 app = FastAPI(
     title=os.getenv("API_TITLE", "LearnHub API"),
     description="API for language learning explanations using Groq LLM and user authentication.",
-    version="0.3.1"
+    version="0.4.0" 
 )
 
 app.add_middleware(
@@ -32,36 +31,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/", tags=["General"])
-async def root():
-    return {
-        "message": "Welcome to the LearnHub Language Learning API",
-        "docs_url": "/docs",
-        "redoc_url": "/redoc"
-    }
-
-@app.get("/health", tags=["General"], status_code=status.HTTP_200_OK)
-async def health_check():
-    return {"status": "healthy"}
-
-@app.get("/test-db", tags=["General"])
-async def test_database():
-    connection = get_db_connection()
-    if connection and connection.is_connected():
-        try:
-            cursor = connection.cursor()
-            cursor.execute("SELECT VERSION()")
-            result = cursor.fetchone()
-            return {"status": "connected", "db_version": result[0]}
-        except MySQLError as e:
-            raise HTTPException(status_code=503, detail=f"Database query failed: {e}")
-        finally:
-            if connection and connection.is_connected():
-                cursor.close()
-                connection.close()
-    else:
-        raise HTTPException(status_code=503, detail="Database connection failed")
 
 @app.post("/register", response_model=User, status_code=status.HTTP_201_CREATED, tags=["Authentication"])
 async def register(user_data: UserCreate):
@@ -77,10 +46,8 @@ async def register(user_data: UserCreate):
 async def login_for_access_token(
     username: str = Form("kcanmersin", description="Default username for quick login"),
     password: str = Form("19071907", description="Default password for quick login")
-    # grant_type: str = Form(None, description="OAuth2 grant type"), # Genellikle FastAPI tarafından yönetilir
-    # scope: str = Form("") # Kapsamlar gerekirse eklenebilir
 ):
-    user = auth.authenticate_user(username, password) # Doğrudan username ve password kullanılır
+    user = auth.authenticate_user(username, password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -99,37 +66,28 @@ async def login_for_access_token(
 async def read_users_me(current_user: User = Depends(auth.get_current_active_user)):
     return current_user
 
-@app.post("/learn", response_model=LLMResponse, tags=["Learning"])
-async def learn_language(
-    request: LanguageRequest
-):
-    try:
-        return await services.process_language_request(request, current_user=None)
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        print(f"Unexpected error in /learn endpoint calling service: {e}")
-        raise HTTPException(status_code=500, detail="An internal server error occurred while processing your request.")
+@app.post("/explanation", response_model=LLMResponse, tags=["Learning"])
+async def get_word_explanation(request: LanguageRequest):
+    return await services.get_explanation(request)
 
-@app.post("/learn/authenticated", response_model=LLMResponse, tags=["Learning"])
-async def learn_language_authenticated(
-    request: LanguageRequest,
+@app.post("/save", response_model=UserQuery, tags=["Learning"])
+async def save_word_explanation(
+    request: SaveWordRequest,
     current_user: User = Depends(auth.get_current_active_user)
 ):
-    try:
-        return await services.process_language_request(request, current_user=current_user)
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        print(f"Unexpected error in /learn/authenticated endpoint calling service: {e}")
-        raise HTTPException(status_code=500, detail="An internal server error occurred while processing your request.")
+    return await services.save_explanation(request, current_user)
 
+@app.get("/queries", response_model=List[UserQuery], tags=["Learning"])
+async def get_saved_queries(
+    current_user: User = Depends(auth.get_current_active_user)
+):
+    queries = crud.get_queries_by_user_id(current_user.id)
+    return queries
 @app.post(
     "/setup/create-default-user",
     response_model=User,
     tags=["Setup"],
     summary="Create Default User",
-    description="Creates the default user (kcanmersin@gmail.com) if they do not already exist. Intended for initial setup.",
     status_code=status.HTTP_201_CREATED
 )
 async def create_default_user_endpoint():

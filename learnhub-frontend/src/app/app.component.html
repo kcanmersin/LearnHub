@@ -1,12 +1,24 @@
-<nav>
-  <ul>
-    <li><a routerLink="/learn">Learn</a></li>
-    <li *ngIf="!(isLoggedIn$ | async)"><a routerLink="/login">Login</a></li>
-    <li *ngIf="!(isLoggedIn$ | async)"><a routerLink="/register">Register</a></li>
-    <li *ngIf="(isLoggedIn$ | async)"><a (click)="logout()" style="cursor: pointer;">Logout</a></li>
-  </ul>
-</nav>
+<header>
+  <h1>LearnHub</h1>
+  <nav>
+    <ul>
+      <li><a routerLink="/learn" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Learn</a></li>
+      <ng-container *ngIf="(isLoggedIn$ | async); else loggedOut">
+        <li><a routerLink="/my-words" routerLinkActive="active">My Words</a></li>
+        <li><a (click)="logout()" style="cursor: pointer;">Logout</a></li>
+      </ng-container>
+      <ng-template #loggedOut>
+        <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+        <li><a routerLink="/register" routerLinkActive="active">Register</a></li>
+      </ng-template>
+    </ul>
+  </nav>
+</header>
 
 <main>
   <router-outlet></router-outlet>
 </main>
+
+<footer>
+  <p>&copy; 2025 LearnHub</p>
+</footer>

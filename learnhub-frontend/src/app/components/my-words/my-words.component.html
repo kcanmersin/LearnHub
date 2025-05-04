@@ -1,0 +1,64 @@
+<div class="my-words-container">
+  <h2>My Saved Words & Sentences</h2>
+
+  <div class="filter-container" *ngIf="availableTags.length > 1">
+    <label for="tagFilter">Filter by Tag:</label>
+    <select id="tagFilter" name="tagFilter" [(ngModel)]="selectedTag" (ngModelChange)="filterByTag()">
+      <option *ngFor="let tag of availableTags" [value]="tag">
+        {{ tag === 'all' ? 'All Tags' : tag }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    Loading your words...
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && allSavedWords.length === 0" class="no-words">
+    You haven't saved any words or sentences yet.
+  </div>
+
+   <div *ngIf="!isLoading && !errorMessage && allSavedWords.length > 0 && filteredWords.length === 0" class="no-words">
+    No words found for the selected tag "{{ selectedTag }}".
+  </div>
+
+  <div class="word-list" *ngIf="!isLoading && filteredWords.length > 0">
+    <div class="word-card" *ngFor="let word of filteredWords" (click)="showDetails(word)">
+      <div class="word-card-header">
+        <span class="word-text">{{ word.text }}</span>
+        <span class="badge">{{ word.tag || 'general' }}</span>
+      </div>
+      <div class="word-card-meta">
+         <span class="type">{{ word.input_type }}</span>
+         <span class="date">{{ word.created_at | date:'short' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="selectedWord" (click)="closeDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+       <button class="close-button" (click)="closeDetails()">&times;</button>
+       <h3>{{ selectedWord.text }} <span class="badge modal-badge">{{ selectedWord.tag || 'general' }}</span></h3>
+       <p><strong>Type:</strong> {{ selectedWord.input_type }}</p>
+       <p><strong>Saved on:</strong> {{ selectedWord.created_at | date:'medium' }}</p>
+       <hr>
+       <h4>Explanation</h4>
+       <p>{{ selectedWord.explanation || 'No explanation available.' }}</p>
+       <h4>Examples</h4>
+       <ul *ngIf="selectedWord.examples && selectedWord.examples.length > 0; else noExamples">
+         <li *ngFor="let example of selectedWord.examples; let i = index">
+           <p><strong>Example {{ i + 1 }}:</strong> {{ example }}</p>
+           <p *ngIf="selectedWord.usage_contexts && selectedWord.usage_contexts[i]">
+             <em>Context:</em> {{ selectedWord.usage_contexts[i] }}
+           </p>
+         </li>
+       </ul>
+       <ng-template #noExamples><p>No examples available.</p></ng-template>
+    </div>
+  </div>
+
+</div>
