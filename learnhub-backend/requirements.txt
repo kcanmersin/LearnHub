@@ -8,3 +8,4 @@ pydantic
 passlib[bcrypt] # For password hashing
 python-jose[cryptography] # For JWT handling
 email-validator # Often needed by Pydantic for EmailStr validation (good practice)
+python-multipart # Form verilerini işlemek için gerekli
